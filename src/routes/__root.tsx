@@ -11,6 +11,7 @@ import {
 import appCss from "../styles.css?url";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { WelcomePopup } from "@/components/site/WelcomePopup";
 
 function NotFoundComponent() {
   return (
@@ -95,6 +96,7 @@ function RootComponent() {
         <Outlet />
       </main>
       <Footer />
+      <WelcomePopup />
     </QueryClientProvider>
   );
 }
