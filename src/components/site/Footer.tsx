@@ -1,14 +1,12 @@
 import { Link } from "@tanstack/react-router";
+import logo from "@/assets/puscle-pro-logo.png.asset.json";
 
 export function Footer() {
   return (
-    <footer className="border-t border-border/60 mt-24">
+    <footer className="border-t border-border/60 mt-24 bg-cream/40">
       <div className="mx-auto max-w-7xl px-6 lg:px-10 py-16 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
-          <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-lavender-deep" />
-            <span className="font-display text-2xl">PusclePRO</span>
-          </div>
+          <img src={logo.url} alt="Puscle Pro" className="h-12 w-auto object-contain" />
           <p className="mt-4 text-sm text-muted-foreground max-w-sm">
             Plant protein that respects your time and your tastebuds. Three minutes, hot water, a meal you'd actually choose.
           </p>
