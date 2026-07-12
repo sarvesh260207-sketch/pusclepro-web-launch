@@ -1,12 +1,12 @@
 import { Link } from "@tanstack/react-router";
+import logo from "@/assets/puscle-pro-logo.png.asset.json";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-md bg-background/70 border-b border-border/50">
+    <header className="sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/50">
       <div className="mx-auto max-w-7xl px-6 lg:px-10 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-lavender-deep" />
-          <span className="font-display text-xl tracking-tight">PusclePRO</span>
+        <Link to="/" className="flex items-center">
+          <img src={logo.url} alt="Puscle Pro" className="h-10 w-auto object-contain" />
         </Link>
         <nav className="hidden md:flex items-center gap-8 text-sm">
           <Link to="/products" className="text-muted-foreground hover:text-foreground transition" activeProps={{ className: "text-foreground" }}>Range</Link>
@@ -16,7 +16,7 @@ export function Header() {
         </nav>
         <Link
           to="/early-access"
-          className="text-sm px-4 py-2 rounded-full bg-primary text-primary-foreground hover:opacity-90 transition"
+          className="text-sm px-4 py-2 rounded-full bg-lavender-deep text-primary-foreground font-semibold hover:opacity-90 transition shadow-soft"
         >
           Reserve
         </Link>
