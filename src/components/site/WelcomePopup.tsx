@@ -28,19 +28,21 @@ function ordinal(n: number) {
 }
 
 function useCountdown(hours: number) {
-  const target = useMemo(() => {
-    const stored = localStorage.getItem("pusclepro_deadline_v1");
-    if (stored) return parseInt(stored, 10);
-    const t = Date.now() + hours * 3600 * 1000;
-    localStorage.setItem("pusclepro_deadline_v1", String(t));
-    return t;
-  }, [hours]);
-  const [now, setNow] = useState(Date.now());
+  const [target, setTarget] = useState<number | null>(null);
+  const [now, setNow] = useState(0);
   useEffect(() => {
+    const stored = localStorage.getItem("pusclepro_deadline_v1");
+    let t = stored ? parseInt(stored, 10) : NaN;
+    if (!t || Number.isNaN(t) || t < Date.now()) {
+      t = Date.now() + hours * 3600 * 1000;
+      localStorage.setItem("pusclepro_deadline_v1", String(t));
+    }
+    setTarget(t);
+    setNow(Date.now());
     const i = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(i);
-  }, []);
-  const diff = Math.max(0, target - now);
+  }, [hours]);
+  const diff = target ? Math.max(0, target - now) : 0;
   const h = Math.floor(diff / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
   const s = Math.floor((diff % 60000) / 1000);
