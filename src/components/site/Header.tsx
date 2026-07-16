@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import logo from "@/assets/puscle-pro-logo.png.asset.json";
+const logo = { url: "/puscle-pro-logo.png" };
 
 export function Header() {
   return (
