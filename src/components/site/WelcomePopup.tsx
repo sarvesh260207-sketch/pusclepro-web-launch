@@ -82,13 +82,26 @@ export function WelcomePopup() {
     if (!v) localStorage.setItem(STORAGE_KEY, "1");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const reservations = JSON.parse(localStorage.getItem(RESERVATION_KEY) || "[]");
-    reservations.push({ ...form, position, createdAt: new Date().toISOString() });
-    localStorage.setItem(RESERVATION_KEY, JSON.stringify(reservations));
-    localStorage.setItem(STORAGE_KEY, "1");
-    setSubmitted(true);
+    setError(null);
+    setSubmitting(true);
+    try {
+      await submitBooking({ data: { ...form, position } });
+      const reservations = JSON.parse(localStorage.getItem(RESERVATION_KEY) || "[]");
+      reservations.push({ ...form, position, createdAt: new Date().toISOString() });
+      localStorage.setItem(RESERVATION_KEY, JSON.stringify(reservations));
+      localStorage.setItem(STORAGE_KEY, "1");
+      setSubmitted(true);
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
