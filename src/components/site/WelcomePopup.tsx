@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { products } from "@/lib/products";
+import { submitBooking } from "@/lib/bookings.functions";
 
 const STORAGE_KEY = "pusclepro_welcome_seen_v1";
 const RESERVATION_KEY = "pusclepro_reservation_v1";
