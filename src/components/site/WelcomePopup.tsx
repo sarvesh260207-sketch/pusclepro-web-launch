@@ -194,9 +194,10 @@ export function WelcomePopup() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full rounded-full h-12 text-base font-semibold">
-                Lock spot #{position} for ₹19 →
+              <Button type="submit" disabled={submitting} className="w-full rounded-full h-12 text-base font-semibold">
+                {submitting ? "Locking your spot…" : `Lock spot #${position} for ₹19 →`}
               </Button>
+              {error && <p className="text-xs text-destructive text-center">{error}</p>}
               <button
                 type="button"
                 onClick={() => handleClose(false)}
