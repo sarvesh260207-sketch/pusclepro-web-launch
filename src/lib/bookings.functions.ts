@@ -47,5 +47,58 @@ export const submitBooking = createServerFn({ method: "POST" })
       console.error(`Sheets append failed [${res.status}]: ${text}`);
       throw new Error("Could not save booking");
     }
+
+    // Fire-and-forget email notification (do not fail booking if email fails)
+    try {
+      const gmailKey = process.env.GOOGLE_MAIL_API_KEY;
+      if (gmailKey) {
+        const notifyTo = "sarvesh260207@gmail.com";
+        const subject = `New Puscle Pro preorder — ${data.name}`;
+        const bodyLines = [
+          `New booking received:`,
+          ``,
+          `Name: ${data.name}`,
+          `Email: ${data.email}`,
+          `Phone: ${data.phone}`,
+          `City: ${data.city}`,
+          `Flavor: ${data.flavor}`,
+          `Position: ${data.position ?? "N/A"}`,
+          `Time: ${new Date().toISOString()}`,
+        ].join("\r\n");
+
+        const rfc2822 = [
+          `To: ${notifyTo}`,
+          `Subject: ${subject}`,
+          `Content-Type: text/plain; charset="UTF-8"`,
+          ``,
+          bodyLines,
+        ].join("\r\n");
+
+        const raw = Buffer.from(rfc2822, "utf8")
+          .toString("base64")
+          .replace(/\+/g, "-")
+          .replace(/\//g, "_")
+          .replace(/=+$/, "");
+
+        const mailRes = await fetch(
+          "https://connector-gateway.lovable.dev/google_mail/gmail/v1/users/me/messages/send",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${lovableKey}`,
+              "X-Connection-Api-Key": gmailKey,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ raw }),
+          },
+        );
+        if (!mailRes.ok) {
+          console.error(`Gmail send failed [${mailRes.status}]: ${await mailRes.text()}`);
+        }
+      }
+    } catch (err) {
+      console.error("Email notification error:", err);
+    }
+
     return { ok: true as const };
   });
