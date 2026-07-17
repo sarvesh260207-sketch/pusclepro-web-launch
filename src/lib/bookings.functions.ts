@@ -161,6 +161,45 @@ export const submitBooking = createServerFn({ method: "POST" })
       console.error("Email notification error:", err);
     }
 
-    return { ok: true as const };
+    // Count real bookings (rows minus header if present)
+    let count: number | null = null;
+    try {
+      const countUrl = `${GATEWAY}/v4/spreadsheets/${SPREADSHEET_ID}/values/Sheet1!A:A`;
+      const countRes = await fetch(countUrl, {
+        headers: {
+          Authorization: `Bearer ${lovableKey}`,
+          "X-Connection-Api-Key": sheetsKey,
+        },
+      });
+      if (countRes.ok) {
+        const body = (await countRes.json()) as { values?: string[][] };
+        count = body.values?.length ?? null;
+      }
+    } catch (err) {
+      console.error("Count read error:", err);
+    }
+
+    return { ok: true as const, count };
   });
+
+export const getBookingCount = createServerFn({ method: "GET" }).handler(async () => {
+  const lovableKey = process.env.LOVABLE_API_KEY;
+  const sheetsKey = process.env.GOOGLE_SHEETS_API_KEY;
+  if (!lovableKey || !sheetsKey) return { count: 0 };
+
+  const url = `${GATEWAY}/v4/spreadsheets/${SPREADSHEET_ID}/values/Sheet1!A:A`;
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${lovableKey}`,
+      "X-Connection-Api-Key": sheetsKey,
+    },
+  });
+  if (!res.ok) {
+    console.error(`Sheets read failed [${res.status}]: ${await res.text()}`);
+    return { count: 0 };
+  }
+  const body = (await res.json()) as { values?: string[][] };
+  return { count: body.values?.length ?? 0 };
+});
+
 
